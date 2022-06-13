@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="pding_xs">2dp</dimen>
+    <dimen name="pding_s">4dp</dimen>
+    <dimen name="pding_m">6dp</dimen>
+    <dimen name="pding_l">8dp</dimen>
+    <dimen name="pding_xl">14dp</dimen>
+    <dimen name="pding_xxl">16dp</dimen>
+    <dimen name="cell_min_weigth">150dp</dimen>
+</resources>
