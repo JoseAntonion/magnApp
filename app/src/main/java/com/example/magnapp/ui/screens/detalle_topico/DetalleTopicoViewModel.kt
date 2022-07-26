@@ -50,14 +50,6 @@ class DetalleTopicoViewModel : ViewModel(), CoroutineScope {
         }
     }
 
-//    init {
-//        launch {
-//            topicosRepo.getTopico(topicoId) {
-//                _topico.value = it
-//            }
-//        }
-//    }
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 }

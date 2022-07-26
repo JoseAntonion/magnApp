@@ -28,7 +28,6 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.example.magnapp.R
-import com.example.magnapp.ui.model.Topico
 
 var vModel: MainViewModel? = null
 var topicoClick: ((String) -> Unit)? = null

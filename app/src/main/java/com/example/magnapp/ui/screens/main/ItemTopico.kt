@@ -10,7 +10,9 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.magnapp.R
 import com.example.magnapp.ui.model.Topico
@@ -26,8 +28,32 @@ fun ItemTopico(
     //val makeText = Toast.makeText(LocalContext.current, item.nombre, Toast.LENGTH_SHORT)
     item.getColor()?.let {
         Card(
-        onClick = onClick,
-        backgroundColor = it,
+            onClick = onClick,
+            backgroundColor = it,
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .size(120.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                val image = painterResource(id = R.drawable.ic_salud)
+                Image(
+                    painter = image,
+                    contentDescription = "",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Preview(showBackground = true)
+@Composable
+fun ItemTopicoPreview() {
+    //val makeText = Toast.makeText(LocalContext.current, item.nombre, Toast.LENGTH_SHORT)
+    Card(
+        onClick = {},
+        backgroundColor = Color.Black,
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .size(120.dp)
@@ -40,6 +66,5 @@ fun ItemTopico(
                 modifier = Modifier.fillMaxSize()
             )
         }
-    }
     }
 }
