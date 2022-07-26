@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "171026492326",
+    "project_id": "magnapp-894d2",
+    "storage_bucket": "magnapp-894d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171026492326:android:de8ae335f8a0aa4b8c3d67",
+        "android_client_info": {
+          "package_name": "com.example.magnapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171026492326-3uor3299v18dv97qlqdtron74q1jld32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8oT32cyyJ_5EXvgNr-jRlVUXUVdAWSwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171026492326-3uor3299v18dv97qlqdtron74q1jld32.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
