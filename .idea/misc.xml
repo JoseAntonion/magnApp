@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/compose-model-1655135597959.xml" value="0.32390202702702703" />
+        <entry key="../../../../layout/compose-model-1658850448310.xml" value="1.0" />
+        <entry key="../../../../layout/compose-model-1658853437049.xml" value="0.20092592592592592" />
+        <entry key="../../../../layout/compose-model-1658853638379.xml" value="1.0" />
+        <entry key="../../../../layout/compose-model-1659541731208.xml" value="0.29074074074074074" />
+        <entry key="../../../../layout/compose-model-1659564629106.xml" value="0.3435185185185185" />
+        <entry key="..\:/Users/Jose/AndroidStudioProjects/MagnApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.196" />
+        <entry key="..\:/Users/Jose/AndroidStudioProjects/MagnApp/app/src/main/res/drawable/ic_base_logo.xml" value="0.2455" />
+        <entry key="..\:/Users/Jose/AndroidStudioProjects/MagnApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.196" />
+        <entry key="app/src/main/res/drawable/ic_arrow_drop_down.xml" value="0.16" />
+        <entry key="app/src/main/res/drawable/ic_arrow_drop_up.xml" value="0.16" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

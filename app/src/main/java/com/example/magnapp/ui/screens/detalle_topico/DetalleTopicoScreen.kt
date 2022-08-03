@@ -2,6 +2,7 @@ package com.example.magnapp.ui.screens.detalle_topico
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.magnapp.R
 import com.example.magnapp.ui.model.Topico
 import com.example.magnapp.ui.model.getColor
 import com.example.magnapp.ui.screens.main.AppBarWithBack
@@ -165,7 +168,54 @@ fun MainView(nombreTopico: String) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "CONSTITUCIÓN\nACTUAL",
+                        text = "ACTUAL",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.button,
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 6.dp, top = 8.dp, end = 6.dp)
+                            .fillMaxSize()
+                    )
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(end = 4.dp, start = 4.dp, bottom = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = oldMatchesState?.value.toString(),
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = " Resultados",
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            style = MaterialTheme.typography.overline,
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                        )
+                        Row{
+                            Box {
+                                val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
+                                Image(
+                                    painter = arrowUp,
+                                    contentDescription = ""
+                                )
+                            }
+                            Box {
+                                val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
+                                Image(
+                                    painter = arrowDown,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                    }
+                    /*Text(
+                        text = "ACTUAL",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button,
                         color = Color.White,
@@ -180,11 +230,6 @@ fun MainView(nombreTopico: String) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "VER COINCIDENCIAS :",
-                            color = Color.White,
-                            style = MaterialTheme.typography.overline
-                        )
-                        Text(
                             text = oldMatchesState?.value.toString(),
                             color = Color.White,
                             fontSize = 16.sp,
@@ -192,7 +237,12 @@ fun MainView(nombreTopico: String) {
                             modifier = Modifier
                                 .padding(start = 8.dp)
                         )
-                    }
+                        Text(
+                            text = " VECES",
+                            color = Color.White,
+                            style = MaterialTheme.typography.overline
+                        )
+                    }*/
                 }
             }
             Card(
@@ -211,6 +261,53 @@ fun MainView(nombreTopico: String) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
+                        text = "NUEVA",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.button,
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 6.dp, top = 8.dp, end = 6.dp)
+                            .fillMaxSize()
+                    )
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(end = 4.dp, start = 4.dp, bottom = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = newMatchesState?.value.toString(),
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = " Resultados",
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            style = MaterialTheme.typography.overline,
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                        )
+                        Row{
+                            Box {
+                                val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
+                                Image(
+                                    painter = arrowUp,
+                                    contentDescription = ""
+                                )
+                            }
+                            Box {
+                                val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
+                                Image(
+                                    painter = arrowDown,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                    }
+                    /*Text(
                         text = "CONSTITUCIÓN\nNUEVA",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button,
@@ -238,7 +335,7 @@ fun MainView(nombreTopico: String) {
                             modifier = Modifier
                                 .padding(start = 8.dp)
                         )
-                    }
+                    }*/
                 }
             }
         }
@@ -365,40 +462,58 @@ fun MainViewPreview() {
                             .show()
                     },
                 shape = RoundedCornerShape(8.dp, 0.dp, 0.dp, 8.dp),
-                backgroundColor = ExtendedTheme.colors.antiguaC
+                backgroundColor = Color.Black
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "CONSTITUCIÓN\nACTUAL",
+                        text = "ACTUAL",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button,
                         color = Color.White,
                         modifier = Modifier
                             .padding(start = 6.dp, top = 8.dp, end = 6.dp)
-                            .fillMaxWidth()
+                            .fillMaxSize()
                     )
                     Row(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(8.dp),
+                            .padding(end = 4.dp, start = 4.dp, bottom = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "VER COINCIDENCIAS :",
+                            text = "1/15",
                             color = Color.White,
-                            style = MaterialTheme.typography.overline
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "15",
+                            text = " Resultados",
+                            textAlign = TextAlign.Center,
                             color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp,
+                            style = MaterialTheme.typography.overline,
                             modifier = Modifier
-                                .padding(start = 8.dp)
+                                .padding(start = 4.dp)
                         )
+                        Row{
+                            Box {
+                                val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
+                                Image(
+                                    painter = arrowUp,
+                                    contentDescription = ""
+                                )
+                            }
+                            Box {
+                                val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
+                                Image(
+                                    painter = arrowDown,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -411,44 +526,68 @@ fun MainViewPreview() {
                             .show()
                     },
                 shape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 0.dp),
-                backgroundColor = ExtendedTheme.colors.nuevaC
+                backgroundColor = Color.Black
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "CONSTITUCIÓN\nNUEVA",
+                        text = "NUEVA",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button,
                         color = Color.White,
                         modifier = Modifier
                             .padding(start = 6.dp, top = 8.dp, end = 6.dp)
-                            .fillMaxWidth()
+                            .fillMaxSize()
                     )
                     Row(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(8.dp),
+                            .padding(end = 4.dp, start = 4.dp, bottom = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "VER COINCIDENCIAS :",
+                            text = "1/15",
                             color = Color.White,
-                            style = MaterialTheme.typography.overline
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "15",
+                            text = " Resultados",
+                            textAlign = TextAlign.Center,
                             color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp,
+                            style = MaterialTheme.typography.overline,
                             modifier = Modifier
-                                .padding(start = 8.dp)
+                                .padding(start = 4.dp)
                         )
+                        Row{
+                            Box {
+                                val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
+                                Image(
+                                    painter = arrowUp,
+                                    contentDescription = ""
+                                )
+                            }
+                            Box {
+                                val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
+                                Image(
+                                    painter = arrowDown,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
+
+        /**
+         * Comparador
+         */
+
+
     }
 }
 

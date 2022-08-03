@@ -104,8 +104,7 @@ class TopicosRepo {
                                 val articulos = it?.toObjects<Articulo>()
                                 articulos?.forEach { articulo ->
                                     articulo.incisos.forEach { inciso ->
-                                        val matcher =
-                                            Pattern.compile(word).matcher(inciso.lowercase())
+                                        val matcher = Pattern.compile(word).matcher(inciso.lowercase())
                                         while (matcher.find()) {
                                             counter++
                                         }
