@@ -15,6 +15,8 @@ import kotlin.coroutines.CoroutineContext
 class DetalleTopicoViewModel : ViewModel(), CoroutineScope {
 
     val TAG = DetalleTopicoViewModel::class.java.simpleName
+    val CONSTITUCION_ACTUAL = "constitucion_actual"
+    val CONSTITUCION_NUEVA = "constitucion_nueva"
     private val _topico = MutableLiveData<Topico>()
     val topico: LiveData<Topico>
         get() = _topico
@@ -50,24 +52,10 @@ class DetalleTopicoViewModel : ViewModel(), CoroutineScope {
         }
     }
 
-    fun getChipMatches3(key: String) {
-        launch {
-            topicosRepo.getConstitutionMatches("constitucion_actual", key) {
-                _oldMatches.value = it
-            }
-            topicosRepo.getConstitutionMatches("constitucion_nueva", key) {
-                _newMatches.value = it
-            }
-            topicosRepo.getPartOfMatchByKey {
-                _newArticleMatch.value = it
-            }
-        }
-    }
-
     fun getChipMatches(key: String) {
         launch {
-            getConstitutionMatches("constitucion_actual", key)
-            getConstitutionMatches("constitucion_nueva", key)
+            getConstitutionMatches(CONSTITUCION_ACTUAL, key)
+            getConstitutionMatches(CONSTITUCION_NUEVA, key)
             showMatchedArticles()
         }
     }
@@ -76,10 +64,10 @@ class DetalleTopicoViewModel : ViewModel(), CoroutineScope {
         try {
             topicosRepo.getPartOfMatchByKey {
                 when (it[0]) {
-                    "constitucion_actual" -> {
+                    CONSTITUCION_ACTUAL -> {
                         _oldArticleMatch.value = it
                     }
-                    "constitucion_nueva" -> {
+                    CONSTITUCION_NUEVA -> {
                         _newArticleMatch.value = it
                     }
                 }
@@ -94,10 +82,10 @@ class DetalleTopicoViewModel : ViewModel(), CoroutineScope {
         try {
             topicosRepo.getConstitutionMatches(wichOne, key) {
                 when (wichOne) {
-                    "constitucion_actual" -> {
+                    CONSTITUCION_ACTUAL -> {
                         _oldMatches.value = it
                     }
-                    "constitucion_nueva" -> {
+                    CONSTITUCION_NUEVA -> {
                         _newMatches.value = it
                     }
                 }

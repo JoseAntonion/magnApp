@@ -54,17 +54,19 @@ fun ItemInciso(
             /**
              * See more Button
              */
-            TextButton(
-                onClick = { onClick.invoke() },
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .align(Alignment.End)
-            ) {
-                Text(
-                    text = "Ver mas",
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.End
-                )
+            if(content != null) {
+                TextButton(
+                    onClick = { onClick.invoke() },
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .align(Alignment.End)
+                ) {
+                    Text(
+                        text = "Ver mas",
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.End
+                    )
+                }
             }
         }
     }

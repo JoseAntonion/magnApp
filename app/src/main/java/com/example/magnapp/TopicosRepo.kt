@@ -80,13 +80,15 @@ class TopicosRepo {
                                     }
                                 }
                                 state.invoke(counter)
-                                counter = 0
+                                //counter = 0
                             }
                             error.let {
                                 Log.d("TAG", "getChipMatches: ")
                             }
                         }
                 }
+                //state.invoke(counter)
+                //counter = 0
             }
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)

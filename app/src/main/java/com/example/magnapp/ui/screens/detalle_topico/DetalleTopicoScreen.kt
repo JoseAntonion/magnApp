@@ -159,7 +159,8 @@ fun MainView(nombreTopico: String) {
             detalleViewModel?.oldArticleMatch?.observeAsState(mutableMapOf())
         var newSelected by rememberSaveable { mutableStateOf(false) }
         var oldSelected by rememberSaveable { mutableStateOf(false) }
-        var shownArticle by rememberSaveable { mutableStateOf(0)}
+        var newShownArticle by rememberSaveable { mutableStateOf(0) }
+        var oldShownArticle by rememberSaveable { mutableStateOf(0) }
 
         /**
          * Agrupador por constitucion
@@ -206,7 +207,7 @@ fun MainView(nombreTopico: String) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "0 de ${oldMatchesState?.value}",
+                                text = "$oldShownArticle de ${oldMatchesState?.value}",
                                 color = Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
@@ -219,9 +220,8 @@ fun MainView(nombreTopico: String) {
                                         .clip(shape = CircleShape)
                                         .align(CenterVertically)
                                         .clickable {
-                                            Toast
-                                                .makeText(mContext, "UP", Toast.LENGTH_SHORT)
-                                                .show()
+                                            if (oldShownArticle < oldMatchesState?.value!!)
+                                                oldShownArticle++
                                         },
                                     painter = arrowUp,
                                     contentDescription = null,
@@ -233,9 +233,8 @@ fun MainView(nombreTopico: String) {
                                         .clip(shape = CircleShape)
                                         .align(CenterVertically)
                                         .clickable {
-                                            Toast
-                                                .makeText(mContext, "DOWN", Toast.LENGTH_SHORT)
-                                                .show()
+                                            if (oldShownArticle > 0)
+                                                oldShownArticle--
                                         },
                                     painter = arrowDown,
                                     contentDescription = null,
@@ -275,7 +274,7 @@ fun MainView(nombreTopico: String) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "0 de ${newMatchesState?.value}",
+                                text = "$newShownArticle de ${newMatchesState?.value}",
                                 color = Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
@@ -288,7 +287,8 @@ fun MainView(nombreTopico: String) {
                                         .clip(shape = CircleShape)
                                         .align(CenterVertically)
                                         .clickable {
-                                            shownArticle++
+                                            if (newShownArticle < newMatchesState?.value!!)
+                                                newShownArticle++
                                         },
                                     painter = arrowUp,
                                     contentDescription = null,
@@ -300,7 +300,8 @@ fun MainView(nombreTopico: String) {
                                         .clip(shape = CircleShape)
                                         .align(CenterVertically)
                                         .clickable {
-                                            shownArticle++
+                                            if (newShownArticle > 0)
+                                                newShownArticle--
                                         },
                                     painter = arrowDown,
                                     contentDescription = null,
@@ -328,16 +329,16 @@ fun MainView(nombreTopico: String) {
                                 .height(230.dp)
                                 .background(selectedTopic?.value?.getColor() ?: Color.LightGray)
                         ) {
-                            if (oldArticleMatchesState?.value?.size!! > 1) {
-                                val first = oldArticleMatchesState.value[1]
-                                ItemInciso(content = first) {
-                                    Toast.makeText(
-                                        mContext,
-                                        "$first Seleccionado",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                            //if (oldArticleMatchesState?.value?.size!! > 1) {
+                            val first = oldArticleMatchesState?.value?.get(oldShownArticle)
+                            ItemInciso(content = first) {
+                                Toast.makeText(
+                                    mContext,
+                                    "$first Seleccionado",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+                            //}
                             /*oldArticleMatchesState?.value?.forEach {
                                 if (it.key > 0) {
                                     ItemInciso(content = it.value) {
@@ -357,7 +358,15 @@ fun MainView(nombreTopico: String) {
                                 .height(230.dp)
                                 .background(selectedTopic?.value?.getColor() ?: Color.LightGray)
                         ) {
-                            newArticleMatchesState?.value?.forEach {
+                            val first = newArticleMatchesState?.value?.get(newShownArticle+1)
+                            ItemInciso(content = first) {
+                                Toast.makeText(
+                                    mContext,
+                                    "$first Seleccionado",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            /*newArticleMatchesState?.value?.forEach {
                                 if (it.key > 0) {
                                     ItemInciso(content = it.value) {
                                         Toast.makeText(
@@ -367,7 +376,7 @@ fun MainView(nombreTopico: String) {
                                         ).show()
                                     }
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
@@ -472,7 +481,6 @@ fun MainViewPreview() {
                     onChecked = {
                         chipStateOld.value = chipStateNew.value
                         chipStateNew.value = word
-                        //viewModel.
                     }
                 )
             }
