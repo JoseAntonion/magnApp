@@ -2,25 +2,31 @@ package com.example.magnapp.ui.screens.detalle_topico
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -34,7 +40,6 @@ import com.example.magnapp.R
 import com.example.magnapp.ui.model.Topico
 import com.example.magnapp.ui.model.getColor
 import com.example.magnapp.ui.screens.main.AppBarWithBack
-import com.example.magnapp.ui.theme.ExtendedTheme
 
 var detalleViewModel: DetalleTopicoViewModel? = null
 lateinit var mContext: Context
@@ -144,198 +149,227 @@ fun MainView(nombreTopico: String) {
         /**
          * Tabla comparativa
          */
+        val animationTime = 300
+        var visible by rememberSaveable { mutableStateOf(false) }
         val newMatchesState = detalleViewModel?.newMatches?.observeAsState(0)
         val oldMatchesState = detalleViewModel?.oldMatches?.observeAsState(0)
+        val newArticleMatchesState =
+            detalleViewModel?.newArticleMatch?.observeAsState(mutableMapOf())
+        val oldArticleMatchesState =
+            detalleViewModel?.oldArticleMatch?.observeAsState(mutableMapOf())
+        var newSelected by rememberSaveable { mutableStateOf(false) }
+        var oldSelected by rememberSaveable { mutableStateOf(false) }
+        var shownArticle by rememberSaveable { mutableStateOf(0)}
+
+        /**
+         * Agrupador por constitucion
+         */
         Spacer(modifier = Modifier.size(24.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Card(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        Toast
-                            .makeText(mContext, "PINOCHO QLO", Toast.LENGTH_SHORT)
-                            .show()
-                    },
-                shape = RoundedCornerShape(8.dp, 0.dp, 0.dp, 8.dp),
-                backgroundColor = ExtendedTheme.colors.antiguaC
+            /**
+             * Seleccion de constitucion
+             */
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = CenterVertically,
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            visible = true
+                            oldSelected = true
+                            newSelected = false
+                        },
+                    shape = RoundedCornerShape(8.dp, 0.dp, 0.dp, 0.dp),
+                    backgroundColor = if (oldSelected) selectedTopic?.value?.getColor()!! else Color.DarkGray
                 ) {
-                    Text(
-                        text = "ACTUAL",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 6.dp, top = 8.dp, end = 6.dp)
-                            .fillMaxSize()
-                    )
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(end = 4.dp, start = 4.dp, bottom = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(8.dp)
                     ) {
                         Text(
-                            text = oldMatchesState?.value.toString(),
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = " Resultados",
+                            text = "ACTUAL",
                             textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.button,
                             color = Color.White,
-                            fontSize = 12.sp,
-                            style = MaterialTheme.typography.overline,
-                            modifier = Modifier
-                                .padding(start = 4.dp)
+                            modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        Row{
-                            Box {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 8.dp),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "0 de ${oldMatchesState?.value}",
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Row {
                                 val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
                                 Image(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(shape = CircleShape)
+                                        .align(CenterVertically)
+                                        .clickable {
+                                            Toast
+                                                .makeText(mContext, "UP", Toast.LENGTH_SHORT)
+                                                .show()
+                                        },
                                     painter = arrowUp,
-                                    contentDescription = ""
+                                    contentDescription = null,
                                 )
-                            }
-                            Box {
                                 val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
                                 Image(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(shape = CircleShape)
+                                        .align(CenterVertically)
+                                        .clickable {
+                                            Toast
+                                                .makeText(mContext, "DOWN", Toast.LENGTH_SHORT)
+                                                .show()
+                                        },
                                     painter = arrowDown,
-                                    contentDescription = ""
+                                    contentDescription = null,
                                 )
                             }
                         }
                     }
-                    /*Text(
-                        text = "ACTUAL",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 6.dp, top = 8.dp, end = 6.dp)
-                            .fillMaxWidth()
-                    )
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                }
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            visible = false
+                            oldSelected = false
+                            newSelected = true
+                        },
+                    shape = RoundedCornerShape(0.dp, 8.dp, 0.dp, 0.dp),
+                    backgroundColor = if (newSelected) selectedTopic?.value?.getColor()!! else Color.DarkGray
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(8.dp)
                     ) {
                         Text(
-                            text = oldMatchesState?.value.toString(),
+                            text = "NUEVA",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.button,
                             color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Row(
                             modifier = Modifier
-                                .padding(start = 8.dp)
-                        )
-                        Text(
-                            text = " VECES",
-                            color = Color.White,
-                            style = MaterialTheme.typography.overline
-                        )
-                    }*/
+                                .fillMaxWidth()
+                                .padding(end = 8.dp),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "0 de ${newMatchesState?.value}",
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Row {
+                                val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
+                                Image(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(shape = CircleShape)
+                                        .align(CenterVertically)
+                                        .clickable {
+                                            shownArticle++
+                                        },
+                                    painter = arrowUp,
+                                    contentDescription = null,
+                                )
+                                val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
+                                Image(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(shape = CircleShape)
+                                        .align(CenterVertically)
+                                        .clickable {
+                                            shownArticle++
+                                        },
+                                    painter = arrowDown,
+                                    contentDescription = null,
+                                )
+                            }
+                        }
+                    }
                 }
             }
-            Card(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        Toast
-                            .makeText(mContext, "NUEVO TEXTO", Toast.LENGTH_SHORT)
-                            .show()
-                    },
-                shape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 0.dp),
-                backgroundColor = ExtendedTheme.colors.nuevaC
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+
+            /**
+             * Comparador
+             */
+            if (oldSelected || newSelected) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp))
                 ) {
-                    Text(
-                        text = "NUEVA",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 6.dp, top = 8.dp, end = 6.dp)
-                            .fillMaxSize()
-                    )
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(end = 4.dp, start = 4.dp, bottom = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = newMatchesState?.value.toString(),
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = " Resultados",
-                            textAlign = TextAlign.Center,
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            style = MaterialTheme.typography.overline,
+                    if (visible) {
+                        Column(
                             modifier = Modifier
-                                .padding(start = 4.dp)
-                        )
-                        Row{
-                            Box {
-                                val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
-                                Image(
-                                    painter = arrowUp,
-                                    contentDescription = ""
-                                )
+                                .height(230.dp)
+                                .background(selectedTopic?.value?.getColor() ?: Color.LightGray)
+                        ) {
+                            if (oldArticleMatchesState?.value?.size!! > 1) {
+                                val first = oldArticleMatchesState.value[1]
+                                ItemInciso(content = first) {
+                                    Toast.makeText(
+                                        mContext,
+                                        "$first Seleccionado",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
-                            Box {
-                                val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
-                                Image(
-                                    painter = arrowDown,
-                                    contentDescription = ""
-                                )
+                            /*oldArticleMatchesState?.value?.forEach {
+                                if (it.key > 0) {
+                                    ItemInciso(content = it.value) {
+                                        Toast.makeText(
+                                            mContext,
+                                            "$it Seleccionado",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }*/
+                        }
+                    }
+                    if (!visible) {
+                        Column(
+                            modifier = Modifier
+                                .height(230.dp)
+                                .background(selectedTopic?.value?.getColor() ?: Color.LightGray)
+                        ) {
+                            newArticleMatchesState?.value?.forEach {
+                                if (it.key > 0) {
+                                    ItemInciso(content = it.value) {
+                                        Toast.makeText(
+                                            mContext,
+                                            "$it Seleccionado",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
                             }
                         }
                     }
-                    /*Text(
-                        text = "CONSTITUCIÓN\nNUEVA",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 6.dp, top = 8.dp, end = 6.dp)
-                            .fillMaxWidth()
-                    )
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "VER COINCIDENCIAS :",
-                            color = Color.White,
-                            style = MaterialTheme.typography.overline
-                        )
-                        Text(
-                            text = newMatchesState?.value.toString(),
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                        )
-                    }*/
                 }
             }
         }
@@ -447,147 +481,253 @@ fun MainViewPreview() {
         /**
          * Tabla comparativa
          */
-        Spacer(modifier = Modifier.size(24.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically,
+        var visible by remember { mutableStateOf(true) }
+        Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Card(
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        Toast
-                            .makeText(mContext, "PINOCHO QLO", Toast.LENGTH_SHORT)
-                            .show()
-                    },
-                shape = RoundedCornerShape(8.dp, 0.dp, 0.dp, 8.dp),
-                backgroundColor = Color.Black
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = CenterVertically
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            visible = !visible
+                        },
+                    shape = RoundedCornerShape(8.dp, 0.dp, 0.dp, 0.dp),
+                    backgroundColor = Color.DarkGray,
+                    elevation = 0.dp
                 ) {
-                    Text(
-                        text = "ACTUAL",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 6.dp, top = 8.dp, end = 6.dp)
-                            .fillMaxSize()
-                    )
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(end = 4.dp, start = 4.dp, bottom = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(8.dp)
                     ) {
                         Text(
-                            text = "1/15",
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = " Resultados",
+                            text = "ACTUAL",
                             textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.button,
                             color = Color.White,
-                            fontSize = 12.sp,
-                            style = MaterialTheme.typography.overline,
-                            modifier = Modifier
-                                .padding(start = 4.dp)
+                            modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        Row{
-                            Box {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 8.dp),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "0 de 9",
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Row {
                                 val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
                                 Image(
+//                                    modifier = Modifier
+//                                        .weight(0.03f, fill = false)
+//                                        .aspectRatio(
+//                                            arrowUp.intrinsicSize.width /
+//                                                    arrowUp.intrinsicSize.height
+//                                        )
+//                                        .fillMaxWidth(),
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(shape = CircleShape)
+                                        .align(CenterVertically),
                                     painter = arrowUp,
-                                    contentDescription = ""
+                                    contentDescription = null,
+                                    //contentScale = ContentScale.FillWidth
                                 )
-                            }
-                            Box {
                                 val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
                                 Image(
+//                                    modifier = Modifier
+//                                        .weight(0.03f, fill = false)
+//                                        .aspectRatio(
+//                                            arrowDown.intrinsicSize.width /
+//                                                    arrowDown.intrinsicSize.height
+//                                        )
+//                                        .fillMaxWidth(),
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(shape = CircleShape)
+                                        .align(CenterVertically),
                                     painter = arrowDown,
-                                    contentDescription = ""
+                                    contentDescription = null,
+                                    //contentScale = ContentScale.FillWidth
+                                )
+                            }
+                        }
+                    }
+                }
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            visible = !visible
+                        },
+                    shape = RoundedCornerShape(0.dp, 8.dp, 0.dp, 0.dp),
+                    backgroundColor = Color.DarkGray,
+                    elevation = 0.dp
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text(
+                            text = "NUEVA",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.button,
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 8.dp),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "000 de 900",
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Row {
+                                val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
+                                Image(
+//                                    modifier = Modifier
+//                                        .weight(0.03f, fill = false)
+//                                        .aspectRatio(
+//                                            arrowUp.intrinsicSize.width /
+//                                                    arrowUp.intrinsicSize.height
+//                                        )
+//                                        .fillMaxWidth(),
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(shape = CircleShape)
+                                        .align(CenterVertically),
+                                    painter = arrowUp,
+                                    contentDescription = null,
+                                    //contentScale = ContentScale.FillWidth
+                                )
+                                val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
+                                Image(
+//                                    modifier = Modifier
+//                                        .weight(0.03f, fill = false)
+//                                        .aspectRatio(
+//                                            arrowDown.intrinsicSize.width /
+//                                                    arrowDown.intrinsicSize.height
+//                                        )
+//                                        .fillMaxWidth(),
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(shape = CircleShape)
+                                        .align(CenterVertically),
+                                    painter = arrowDown,
+                                    contentDescription = null,
+                                    //contentScale = ContentScale.FillWidth
                                 )
                             }
                         }
                     }
                 }
             }
-            Card(
+
+            /**
+             * Comparador
+             */
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = CenterVertically,
                 modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        Toast
-                            .makeText(mContext, "NUEVO TEXTO", Toast.LENGTH_SHORT)
-                            .show()
-                    },
-                shape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 0.dp),
-                backgroundColor = Color.Black
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp))
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "NUEVA",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button,
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(start = 6.dp, top = 8.dp, end = 6.dp)
-                            .fillMaxSize()
+                AnimatedVisibility(
+                    visible,
+                    modifier = Modifier.fillMaxSize(),
+                    enter = slideInHorizontally(
+                        initialOffsetX = { -300 }, // it == fullWidth
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = LinearEasing
+                        )
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { -300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = LinearEasing
+                        )
                     )
-                    Row(
+                ) {
+                    val testList = listOf(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+                        "hola 2",
+                        "hola 3",
+                        "hola 4",
+                        "hola 5",
+                        "hola 6"
+                    )
+                    Column(
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(end = 4.dp, start = 4.dp, bottom = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .height(230.dp)
+                            .background(selectedTopic?.value?.getColor() ?: Color.LightGray)
                     ) {
-                        Text(
-                            text = "1/15",
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = " Resultados",
-                            textAlign = TextAlign.Center,
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            style = MaterialTheme.typography.overline,
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                        )
-                        Row{
-                            Box {
-                                val arrowUp = painterResource(id = R.drawable.ic_arrow_drop_up)
-                                Image(
-                                    painter = arrowUp,
-                                    contentDescription = ""
-                                )
+                        testList.forEach {
+                            ItemInciso(content = it) {
+                                Toast.makeText(mContext, "$it Seleccionado", Toast.LENGTH_SHORT)
+                                    .show()
                             }
-                            Box {
-                                val arrowDown = painterResource(id = R.drawable.ic_arrow_drop_down)
-                                Image(
-                                    painter = arrowDown,
-                                    contentDescription = ""
-                                )
+                        }
+                    }
+                }
+                AnimatedVisibility(
+                    visible = !visible,
+                    modifier = Modifier.fillMaxSize(),
+                    enter = slideInHorizontally(
+                        initialOffsetX = { it }, // small slide 300px
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = LinearEasing // interpolator
+                        )
+                    ),
+                    exit = slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = LinearEasing
+                        )
+                    )
+                ) {
+                    val testList = listOf(
+                        "hola 1",
+                        "hola 2",
+                        "hola 3",
+                        "hola 4",
+                        "hola 5",
+                        "hola 6"
+                    )
+                    LazyColumn(
+                        contentPadding = PaddingValues(dimensionResource(id = R.dimen.pding_xxl)),// padding derecho/izquierdo del Row
+                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.pding_l))
+                    ) {
+                        items(testList) { item ->
+                            ItemInciso(content = item) {
+                                Toast.makeText(mContext, "$item Seleccionado", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                     }
                 }
             }
         }
-
-        /**
-         * Comparador
-         */
-
-
     }
 }
 

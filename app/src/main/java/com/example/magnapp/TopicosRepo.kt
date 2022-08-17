@@ -18,7 +18,11 @@ import java.util.regex.Pattern
 
 class TopicosRepo {
 
+    var matchArticle = mutableMapOf<Int, String>()
+    val TAG = TopicosRepo::class.java.simpleName
+
     fun getTopicos(state: (List<Topico>) -> Unit) {
+        Log.i(TAG,"PASO getTopicos")
         var listTopicos: List<Topico>
         Firebase.firestore.collection("topicos")
             .addSnapshotListener { value, error ->
@@ -33,6 +37,7 @@ class TopicosRepo {
     }
 
     fun getTopico(topicId: String, state: (Topico?) -> Unit) {
+        Log.i(TAG,"PASO getTopico")
         var topico: Topico?
         Firebase.firestore.collection("topicos").document(topicId)
             .addSnapshotListener { value, error ->
@@ -46,48 +51,10 @@ class TopicosRepo {
             }
     }
 
-    fun getChipMatches(key: String, witchOne: String, state: (Int) -> Unit) {
-        getConstitutionMatches(witchOne, key, state)
-        //val matchConstNueva = getConstitutionMatches("constitucion_nueva", key)
-        /*var counter = 0
-        Firebase.firestore
-            .collection("constitucion_nueva")
-            .get()
-            .addOnSuccessListener { query ->
-                val capitulos = query.toObjects<Capitulo>()
-                capitulos.forEach { capitulo ->
-                    val capituloName = capitulo.id
-                    Firebase.firestore
-                        .collection("constitucion_nueva")
-                        .document(capituloName)
-                        .collection("articulos")
-                        .addSnapshotListener { value, error ->
-                            value.let {
-                                val articulos = it?.toObjects<Articulo>()
-                                articulos?.forEach { articulo ->
-                                    articulo.incisos.forEach { inciso ->
-                                        val matcher =
-                                            Pattern.compile(key).matcher(inciso.lowercase())
-                                        while (matcher.find()) {
-                                            counter++
-                                        }
-                                    }
-                                }
-                                state.invoke(counter)
-                            }
-                            error.let {
-                                Log.d("TAG", "getChipMatches: ")
-                            }
-                        }
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d("TAG", "Error getting documents: ", exception)
-            }*/
-    }
-
-    private fun getConstitutionMatches(wichOne: String, word: String, state: (Int) -> Unit) {
+    fun getConstitutionMatches(wichOne: String, word: String, state: (Int) -> Unit) {
+        Log.i(TAG,"PASO getConstitutionMatches")
         var counter = 0
+        matchArticle[counter] = wichOne
         Firebase.firestore
             .collection(wichOne)
             .get()
@@ -96,7 +63,7 @@ class TopicosRepo {
                 capitulos.forEach { capitulo ->
                     val capituloName = capitulo.id
                     Firebase.firestore
-                        .collection("constitucion_nueva")
+                        .collection(wichOne)
                         .document(capituloName)
                         .collection("articulos")
                         .addSnapshotListener { value, error ->
@@ -104,13 +71,16 @@ class TopicosRepo {
                                 val articulos = it?.toObjects<Articulo>()
                                 articulos?.forEach { articulo ->
                                     articulo.incisos.forEach { inciso ->
-                                        val matcher = Pattern.compile(word).matcher(inciso.lowercase())
+                                        val matcher =
+                                            Pattern.compile(word).matcher(inciso.lowercase())
                                         while (matcher.find()) {
                                             counter++
+                                            matchArticle[counter] = inciso
                                         }
                                     }
                                 }
                                 state.invoke(counter)
+                                counter = 0
                             }
                             error.let {
                                 Log.d("TAG", "getChipMatches: ")
@@ -121,6 +91,12 @@ class TopicosRepo {
             .addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)
             }
+    }
+
+    fun getPartOfMatchByKey(state: (MutableMap<Int, String>) -> Unit) {
+        Log.i(TAG,"PASO getPartOfMatchByKey")
+        state.invoke(matchArticle)
+        matchArticle = mutableMapOf()
     }
 
     private fun deleteMassive() {
