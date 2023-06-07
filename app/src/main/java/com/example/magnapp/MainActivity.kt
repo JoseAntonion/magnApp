@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             // TEST
-            val prueba = "hola prueba"
+            val prueba = "hola prueba desde dell"
             MagnAppTheme {
                 Navigation()
             }
