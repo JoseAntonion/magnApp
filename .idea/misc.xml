@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
+=======
+>>>>>>> f8235348cbc28a4657a29b820a9cd0790413a256
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -12,6 +15,10 @@
         <entry key="../../../../layout/compose-model-1660748055413.xml" value="0.2611111111111111" />
         <entry key="../../../../layout/compose-model-1660750296984.xml" value="0.2962962962962963" />
         <entry key="../../../../layout/compose-model-1660750640400.xml" value="0.26666666666666666" />
+<<<<<<< HEAD
+=======
+        <entry key="../../../../layout/compose-model-1663859023338.xml" value="0.5168612191958496" />
+>>>>>>> f8235348cbc28a4657a29b820a9cd0790413a256
         <entry key="..\:/Users/Jose/AndroidStudioProjects/MagnApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.196" />
         <entry key="..\:/Users/Jose/AndroidStudioProjects/MagnApp/app/src/main/res/drawable/ic_base_logo.xml" value="0.2455" />
         <entry key="..\:/Users/Jose/AndroidStudioProjects/MagnApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.196" />
@@ -20,7 +27,11 @@
       </map>
     </option>
   </component>
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+=======
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+>>>>>>> f8235348cbc28a4657a29b820a9cd0790413a256
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
