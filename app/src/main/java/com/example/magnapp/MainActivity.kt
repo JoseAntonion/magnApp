@@ -11,6 +11,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            // TEST
+            val prueba = "hola prueba"
             MagnAppTheme {
                 Navigation()
             }
